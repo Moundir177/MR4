@@ -1,0 +1,9 @@
+{
+  "/not-found": "app/not-found.js",
+  "/[locale]/page": "app/[locale]/page.js",
+  "/[locale]/contact/page": "app/[locale]/contact/page.js",
+  "/[locale]/about/page": "app/[locale]/about/page.js",
+  "/[locale]/programs/[id]/page": "app/[locale]/programs/[id]/page.js",
+  "/[locale]/courses/page": "app/[locale]/courses/page.js",
+  "/[locale]/programs/page": "app/[locale]/programs/page.js"
+}

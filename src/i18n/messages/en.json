@@ -1,0 +1,156 @@
+{
+  "common": {
+    "learnMore": "Learn More",
+    "apply": "Apply Now",
+    "contact": "Contact Us",
+    "viewPrograms": "Discover Programs",
+    "joinUs": "Join Us",
+    "startNow": "Start Now",
+    "readMore": "Read More",
+    "viewAll": "View All",
+    "getStarted": "Get Started",
+    "explore": "Explore",
+    "submit": "Submit",
+    "sending": "Sending...",
+    "success": "Success!",
+    "thankyou": "Thank You!"
+  },
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "programs": "Programs",
+    "courses": "Courses",
+    "events": "Events",
+    "blog": "Blog",
+    "contact": "Contact",
+    "login": "Login",
+    "register": "Register"
+  },
+  "home": {
+    "hero": {
+      "title": "MIRA ACADEMY",
+      "subtitle": "Center of Excellence for Professional Training",
+      "description": "Transform your future with our innovative training programs tailored to meet the needs of the Algerian market. Discover learning paths designed by experts to ensure your professional success."
+    },
+    "stats": {
+      "title": "Our Impact in Numbers",
+      "subtitle": "Results that speak for themselves",
+      "students": "Trained Students",
+      "courses": "Available Courses",
+      "instructors": "Expert Instructors",
+      "partners": "Corporate Partners"
+    },
+    "features": {
+      "title": "Why Choose MIRA ACADEMY?",
+      "subtitle": "Our commitment to your success",
+      "quality": {
+        "title": "Superior Quality Training",
+        "description": "Programs developed by industry professionals, tailored to actual business needs to guarantee your employability."
+      },
+      "practical": {
+        "title": "Practical & Immersive Approach",
+        "description": "Learning focused on practice and concrete field experience, with real projects and relevant case studies."
+      },
+      "certification": {
+        "title": "Recognized Certifications",
+        "description": "Obtain internationally recognized certifications that enhance your professional profile and strengthen your credibility."
+      },
+      "support": {
+        "title": "Personalized Support",
+        "description": "Individual follow-up to help you achieve your professional goals, with dedicated mentors throughout your journey."
+      }
+    },
+    "programs": {
+      "title": "Our Training Programs",
+      "description": "Discover our range of training programs designed to meet job market requirements and propel you towards professional excellence.",
+      "cta": "Explore All Programs"
+    },
+    "testimonials": {
+      "title": "What Our Students Say",
+      "subtitle": "Journeys that inspire",
+      "readAll": "Read All Testimonials"
+    },
+    "cta": {
+      "title": "Ready to Transform Your Future?",
+      "subtitle": "Join MIRA ACADEMY and give your career a new momentum",
+      "button": "Register Now",
+      "contact": "Or contact us to learn more"
+    }
+  },
+  "about": {
+    "title": "About MIRA ACADEMY",
+    "subtitle": "Our history, our mission, our vision",
+    "mission": "Our Mission",
+    "mission_text": "To provide accessible excellence in training, transforming talent into competent and versatile professionals.",
+    "vision": "Our Vision",
+    "vision_text": "To become the leader in professional training in Algeria, recognized for the excellence of our programs and the positive impact on our learners' employability.",
+    "values": "Our Values",
+    "values_list": {
+      "excellence": "Excellence",
+      "innovation": "Innovation",
+      "integrity": "Integrity",
+      "inclusion": "Inclusion"
+    },
+    "team": "Our Team",
+    "team_description": "Meet the passionate individuals behind MIRA ACADEMY, dedicated to transforming education and empowering students.",
+    "join_team": "Join Our Team"
+  },
+  "blog": {
+    "title": "Our Blog",
+    "subtitle": "Latest insights, news, and educational resources",
+    "readMore": "Read More",
+    "backToBlog": "Back to Blog",
+    "imageAlt": "Blog post image",
+    "categories": "Categories",
+    "popularPosts": "Popular Posts",
+    "relatedPosts": "Related Posts",
+    "sharePost": "Share This Post"
+  },
+  "contact": {
+    "title": "Contact Us",
+    "subtitle": "Have questions about our programs? Get in touch with our team for more information.",
+    "address": {
+      "title": "Address",
+      "content": "123 Main Street, Algiers, Algeria"
+    },
+    "phone": {
+      "title": "Phone",
+      "content": "+213 123 456 789"
+    },
+    "email": {
+      "title": "Email",
+      "content": "contact@mira-academy.dz"
+    },
+    "hours": {
+      "title": "Hours",
+      "content": "Mon-Fri: 9AM - 5PM"
+    },
+    "form": {
+      "title": "Send Us a Message",
+      "subtitle": "We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.",
+      "name": "Full Name",
+      "email": "Email Address",
+      "subject": "Subject",
+      "message": "Message",
+      "submit": "Send Message",
+      "success": "Your message has been sent successfully. We'll contact you soon."
+    }
+  },
+  "footer": {
+    "about_us": "About Us",
+    "about_text": "MIRA ACADEMY is a professional training center dedicated to excellence and educational innovation.",
+    "programs": "Programs",
+    "resources": "Resources",
+    "legal": "Legal",
+    "rights": "All Rights Reserved",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Use",
+    "contact_us": "Contact Us",
+    "address": "123 Main Street, Algiers, Algeria",
+    "phone": "+213 00 00 00 00",
+    "email": "contact@mira-academy.com",
+    "newsletter": "Subscribe to our newsletter",
+    "newsletter_placeholder": "Your email address",
+    "subscribe": "Subscribe"
+  }
+} 

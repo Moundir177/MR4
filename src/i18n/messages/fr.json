@@ -1,0 +1,156 @@
+{
+  "common": {
+    "learnMore": "En savoir plus",
+    "apply": "Postuler maintenant",
+    "contact": "Nous contacter",
+    "viewPrograms": "Découvrir nos programmes",
+    "joinUs": "Rejoignez-nous",
+    "startNow": "Commencer maintenant",
+    "readMore": "Lire la suite",
+    "viewAll": "Voir tout",
+    "getStarted": "Commencer",
+    "explore": "Explorer",
+    "submit": "Envoyer",
+    "sending": "Envoi en cours...",
+    "success": "Succès !",
+    "thankyou": "Merci !"
+  },
+  "navigation": {
+    "home": "Accueil",
+    "about": "À propos",
+    "programs": "Programmes",
+    "courses": "Cours",
+    "events": "Événements",
+    "blog": "Blog",
+    "contact": "Contact",
+    "login": "Connexion",
+    "register": "S'inscrire"
+  },
+  "home": {
+    "hero": {
+      "title": "MIRA ACADEMY",
+      "subtitle": "Centre d'Excellence pour la Formation Professionnelle",
+      "description": "Transformez votre avenir avec nos formations innovantes adaptées aux besoins du marché algérien. Découvrez des parcours d'apprentissage conçus par des experts pour votre réussite professionnelle."
+    },
+    "stats": {
+      "title": "Notre impact en chiffres",
+      "subtitle": "Des résultats qui parlent d'eux-mêmes",
+      "students": "Étudiants formés",
+      "courses": "Cours disponibles",
+      "instructors": "Instructeurs experts",
+      "partners": "Partenaires d'entreprise"
+    },
+    "features": {
+      "title": "Pourquoi choisir MIRA ACADEMY ?",
+      "subtitle": "Notre engagement pour votre réussite",
+      "quality": {
+        "title": "Formation de qualité supérieure",
+        "description": "Des programmes élaborés par des professionnels du secteur, adaptés aux besoins réels des entreprises pour garantir votre employabilité."
+      },
+      "practical": {
+        "title": "Approche pratique & immersive",
+        "description": "Un apprentissage axé sur la pratique et l'expérience concrète du terrain, avec des projets réels et des études de cas pertinentes."
+      },
+      "certification": {
+        "title": "Certifications reconnues",
+        "description": "Obtenez des certifications reconnues internationalement qui valorisent votre profil professionnel et renforcent votre crédibilité."
+      },
+      "support": {
+        "title": "Accompagnement personnalisé",
+        "description": "Un suivi individuel pour vous aider à atteindre vos objectifs professionnels, avec des mentors dédiés tout au long de votre parcours."
+      }
+    },
+    "programs": {
+      "title": "Nos programmes de formation",
+      "description": "Découvrez notre éventail de formations conçues pour répondre aux exigences du marché du travail et vous propulser vers l'excellence professionnelle.",
+      "cta": "Explorer tous nos programmes"
+    },
+    "testimonials": {
+      "title": "Ce que disent nos étudiants",
+      "subtitle": "Des parcours qui inspirent",
+      "readAll": "Lire tous les témoignages"
+    },
+    "cta": {
+      "title": "Prêt à transformer votre avenir ?",
+      "subtitle": "Rejoignez MIRA ACADEMY et donnez un nouvel élan à votre carrière",
+      "button": "S'inscrire maintenant",
+      "contact": "Ou contactez-nous pour en savoir plus"
+    }
+  },
+  "about": {
+    "title": "À propos de MIRA ACADEMY",
+    "subtitle": "Notre histoire, notre mission, notre vision",
+    "mission": "Notre mission",
+    "mission_text": "Offrir une formation d'excellence accessible à tous, pour transformer les talents en professionnels compétents et polyvalents.",
+    "vision": "Notre vision",
+    "vision_text": "Devenir le leader de la formation professionnelle en Algérie, reconnu pour l'excellence de nos programmes et l'impact positif sur l'employabilité de nos apprenants.",
+    "values": "Nos valeurs",
+    "values_list": {
+      "excellence": "Excellence",
+      "innovation": "Innovation",
+      "integrity": "Intégrité",
+      "inclusion": "Inclusion"
+    },
+    "team": "Notre équipe",
+    "team_description": "Découvrez les personnes passionnées derrière MIRA ACADEMY, dédiées à transformer l'éducation et à autonomiser les étudiants.",
+    "join_team": "Rejoindre l'équipe"
+  },
+  "contact": {
+    "title": "Contactez-nous",
+    "subtitle": "Vous avez des questions sur nos programmes ? Contactez notre équipe pour plus d'informations.",
+    "address": {
+      "title": "Adresse",
+      "content": "123 Rue Principale, Alger, Algérie"
+    },
+    "phone": {
+      "title": "Téléphone",
+      "content": "+213 123 456 789"
+    },
+    "email": {
+      "title": "Email",
+      "content": "contact@mira-academy.dz"
+    },
+    "hours": {
+      "title": "Horaires",
+      "content": "Lun-Ven: 9h - 17h"
+    },
+    "form": {
+      "title": "Envoyez-nous un message",
+      "subtitle": "Nous serions ravis d'avoir de vos nouvelles. Remplissez le formulaire ci-dessous et nous vous répondrons dans les plus brefs délais.",
+      "name": "Nom complet",
+      "email": "Adresse email",
+      "subject": "Sujet",
+      "message": "Message",
+      "submit": "Envoyer le message",
+      "success": "Votre message a été envoyé avec succès. Nous vous contacterons bientôt."
+    }
+  },
+  "footer": {
+    "about_us": "À propos de nous",
+    "about_text": "MIRA ACADEMY est un centre de formation professionnelle dédié à l'excellence et à l'innovation pédagogique.",
+    "programs": "Programmes",
+    "resources": "Ressources",
+    "legal": "Mentions légales",
+    "rights": "Tous droits réservés",
+    "privacy": "Politique de confidentialité",
+    "terms": "Conditions d'utilisation",
+    "contact_us": "Contactez-nous",
+    "address": "123 Rue Principale, Alger, Algérie",
+    "phone": "+213 00 00 00 00",
+    "email": "contact@mira-academy.com",
+    "newsletter": "Abonnez-vous à notre newsletter",
+    "newsletter_placeholder": "Votre adresse email",
+    "subscribe": "S'abonner"
+  },
+  "blog": {
+    "title": "Notre Blog",
+    "subtitle": "Dernières actualités, informations et ressources éducatives",
+    "readMore": "Lire Plus",
+    "backToBlog": "Retour au Blog",
+    "imageAlt": "Image de l'article",
+    "categories": "Catégories",
+    "popularPosts": "Articles Populaires",
+    "relatedPosts": "Articles Similaires",
+    "sharePost": "Partager cet Article"
+  }
+} 
