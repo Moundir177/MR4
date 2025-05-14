@@ -39,3 +39,10 @@ jobs:
           directory: .next/standalone
           # Remove gitHubToken to avoid using GitHub deployments entirely
           # gitHubToken: ${{ secrets.GITHUB_TOKEN }} 
+          
+      - name: Cloudflare Purge Cache
+        if: success()
+        uses: jakejarvis/cloudflare-purge-action@master
+        env:
+          CLOUDFLARE_ZONE: ${{ secrets.CLOUDFLARE_ZONE }}
+          CLOUDFLARE_TOKEN: ${{ secrets.CLOUDFLARE_TOKEN }} 
