@@ -18,7 +18,7 @@ import {
   ChevronRightIcon,
   UserCircleIcon,
   BookOpenIcon,
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
 
 // Discussions page dictionary
 const discussionsDictionary = {

@@ -9,7 +9,7 @@ import {
   ClockIcon,
   ChatBubbleLeftRightIcon,
   CheckCircleIcon
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
 
 // Contact page dictionary
 const contactDictionary = {

@@ -14,7 +14,7 @@ import {
   StarIcon,
   BriefcaseIcon,
   BuildingLibraryIcon
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
 
 // About page dictionary
 const aboutDictionary = {

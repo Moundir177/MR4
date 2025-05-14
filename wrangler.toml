@@ -1,0 +1,41 @@
+# Cloudflare Pages configuration
+[pages]
+# Specify the build output directory
+pages_build_output_dir = ".next/standalone"
+
+# Build command settings
+[build]
+command = "npm run build"
+
+# Environment variables
+[build.environment]
+NODE_VERSION = "18"
+
+name = "miracademy"
+main = ".next/standalone/server.js"
+compatibility_date = "2023-11-21"
+compatibility_flags = ["nodejs_compat"]
+
+[build.upload]
+format = "modules"
+
+[vars]
+NODE_ENV = "production"
+
+[site]
+bucket = ".next/standalone"
+
+[[routes]]
+pattern = "/api/*"
+script = "api"
+
+[[kv_namespaces]]
+binding = "MIRACADEMY_STORE"
+id = "miracademy-kv"
+
+[env.preview]
+name = "miracademy-preview"
+
+[[env.preview.kv_namespaces]]
+binding = "MIRACADEMY_STORE"
+id = "miracademy-kv-preview" 

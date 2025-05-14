@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
-import { motion, useScroll, useTransform } from 'framer-motion';
+import { motion } from 'framer-motion';
 import type { Locale } from '@/i18n/settings';
 
 interface HeroProps {
@@ -26,9 +26,17 @@ export default function Hero({ locale, dictionary }: HeroProps) {
   };
 
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
-  const { scrollY } = useScroll();
-  const yScroll = useTransform(scrollY, [0, 500], [0, -150]);
-  const opacityScroll = useTransform(scrollY, [0, 300], [1, 0]);
+  const [scrollY, setScrollY] = useState(0);
+  
+  // Track scroll position
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrollY(window.scrollY);
+    };
+    
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   // Track mouse position for parallax effect
   useEffect(() => {
@@ -39,6 +47,10 @@ export default function Hero({ locale, dictionary }: HeroProps) {
     window.addEventListener('mousemove', handleMouseMove);
     return () => window.removeEventListener('mousemove', handleMouseMove);
   }, []);
+
+  // Calculate parallax values
+  const yScroll = scrollY * -0.3; // Similar to useTransform(scrollY, [0, 500], [0, -150])
+  const opacityScroll = Math.max(0, 1 - (scrollY / 300)); // Similar to useTransform(scrollY, [0, 300], [1, 0])
 
   // Generate random particles
   const generateParticles = (count: number) => {
@@ -127,9 +139,9 @@ export default function Hero({ locale, dictionary }: HeroProps) {
       </div>
       
       {/* Main content with parallax effect */}
-      <motion.div
+      <div
         className="container mx-auto px-4 sm:px-6 lg:px-8 relative z-10"
-        style={{ y: yScroll }}
+        style={{ transform: `translateY(${yScroll}px)` }}
       >
         <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16">
           {/* Text content */}
@@ -171,6 +183,7 @@ export default function Hero({ locale, dictionary }: HeroProps) {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.5, delay: 0.6 }}
+              style={{ opacity: opacityScroll }}
             >
               {home.hero.description}
             </motion.p>
@@ -335,7 +348,7 @@ export default function Hero({ locale, dictionary }: HeroProps) {
             />
           </div>
         </motion.div>
-      </motion.div>
+      </div>
     </section>
   );
 } 

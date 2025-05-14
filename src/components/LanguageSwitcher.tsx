@@ -25,13 +25,17 @@ const switcherDictionary = {
   }
 };
 
-const LanguageSwitcher = () => {
+interface LanguageSwitcherProps {
+  currentLocale?: string;
+}
+
+const LanguageSwitcher = ({ currentLocale: propLocale }: LanguageSwitcherProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   
-  // Get current locale from pathname
-  const currentLocale = pathname?.split('/')[1] || 'en';
+  // Get current locale from prop or pathname
+  const currentLocale = propLocale || pathname?.split('/')[1] || 'en';
   
   // Get dictionary for current locale
   const dictionary = switcherDictionary[currentLocale as keyof typeof switcherDictionary] || switcherDictionary.en;

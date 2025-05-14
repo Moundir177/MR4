@@ -413,10 +413,11 @@ export default function LearningPage() {
   
   // Handle quiz submission
   const handleQuizSubmit = () => {
-    if (currentLesson.type === 'quiz') {
+    if (currentLesson.type === 'quiz' && currentLesson.content && currentLesson.content.questions) {
       let score = 0;
       quizAnswers.forEach((answer, index) => {
-        if (answer === currentLesson.content.questions[index].correctAnswer) {
+        if (index < (currentLesson.content!.questions as any[]).length && 
+            answer === (currentLesson.content!.questions as any[])[index].correctAnswer) {
           score++;
         }
       });
@@ -523,11 +524,15 @@ export default function LearningPage() {
             <div className="bg-white rounded-xl shadow-sm p-6 mb-6">
               {activeTab === 'content' && (
                 <div>
-                  {currentLesson.type === 'reading' && (
+                  {currentLesson.type === 'reading' && currentLesson.content && currentLesson.content.text && (
                     <div 
                       className="prose prose-primary max-w-none"
                       dangerouslySetInnerHTML={{ __html: currentLesson.content.text }}
                     />
+                  )}
+                  
+                  {currentLesson.type === 'reading' && currentLesson.content && !currentLesson.content.text && (
+                    <div className="text-gray-600">No content available</div>
                   )}
                   
                   {currentLesson.type === 'video' && (
@@ -539,7 +544,7 @@ export default function LearningPage() {
                     </div>
                   )}
                   
-                  {currentLesson.type === 'quiz' && (
+                  {currentLesson.type === 'quiz' && currentLesson.content && currentLesson.content.questions && (
                     <div>
                       <h2 className="text-xl font-bold text-gray-800 mb-4">{dictionary.quiz}: {currentLesson.title}</h2>
                       <p className="text-gray-600 mb-6">{dictionary.quizInstructions}</p>
@@ -626,10 +631,10 @@ export default function LearningPage() {
                             ))}
                           </div>
                           
-                          <div className="mt-8">
+                          <div className="mt-6 text-center">
                             <button
-                              className="px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                               onClick={handleQuizSubmit}
+                              className="px-6 py-3 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-colors"
                               disabled={quizAnswers.length !== currentLesson.content.questions.length}
                             >
                               {dictionary.submitQuiz}

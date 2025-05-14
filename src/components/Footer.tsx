@@ -8,13 +8,8 @@ import LanguageSwitcher from './LanguageSwitcher';
 import { 
   EnvelopeIcon, 
   PhoneIcon, 
-  MapPinIcon,
-  FacebookIcon,
-  TwitterIcon,
-  InstagramIcon,
-  LinkedInIcon,
-  YouTubeIcon
-} from '@heroicons/react/24/outline';
+  MapPinIcon
+} from '@heroicons/react/24/solid';
 
 // Footer dictionary
 const footerDictionary = {
@@ -116,7 +111,7 @@ const footerDictionary = {
   }
 };
 
-// Social media icons
+// Social media icons defined as custom SVGs
 const SocialIcons = {
   Facebook: ({ className }: { className?: string }) => (
     <svg className={className} xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
@@ -145,10 +140,15 @@ const SocialIcons = {
   ),
 };
 
-const Footer = () => {
-  // Get locale from pathname
+interface FooterProps {
+  locale?: string;
+  dictionary?: any;
+}
+
+const Footer = ({ locale: propLocale, dictionary: propDictionary }: FooterProps = {}) => {
+  // Get locale from pathname or props
   const pathname = usePathname();
-  const locale = pathname?.split('/')[1] || 'en';
+  const locale = propLocale || pathname?.split('/')[1] || 'en';
   
   const dictionary = footerDictionary[locale as keyof typeof footerDictionary] || footerDictionary.en;
   

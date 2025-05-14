@@ -7,7 +7,7 @@ import Footer from '@/components/Footer';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Image from 'next/image';
 import Link from 'next/link';
-import { notFound } from 'next/navigation';
+import { notFound } from 'next/dist/client/components/not-found';
 
 // Define program page params
 export async function generateStaticParams() {
@@ -304,7 +304,7 @@ export default async function ProgramDetailPage({
         </div>
       </section>
 
-      <Footer dictionary={dict} currentLocale={locale} />
+      <Footer dictionary={dict} locale={locale} />
       <div className="fixed bottom-4 right-4 z-50">
         <LanguageSwitcher currentLocale={locale} />
       </div>

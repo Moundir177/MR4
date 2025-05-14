@@ -8,7 +8,7 @@ import {
   UserGroupIcon,
   TrophyIcon,
   ClipboardDocumentCheckIcon
-} from '@heroicons/react/24/outline';
+} from '@heroicons/react/24/solid';
 import type { Locale } from '@/i18n/settings';
 
 interface ValuesProps {

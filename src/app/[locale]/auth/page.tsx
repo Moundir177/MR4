@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import { Tab } from '@headlessui/react';
 import { motion } from 'framer-motion';
@@ -125,11 +125,9 @@ export default function AuthPage() {
   const pathname = usePathname();
   const locale = pathname.split('/')[1] || 'en';
   
-  const searchParams = useSearchParams();
-  const tabParam = searchParams.get('tab');
+  // Use a default tab state instead of searchParams
+  const [activeTab, setActiveTab] = useState(0);
   const dictionary = authDictionary[locale as keyof typeof authDictionary] || authDictionary.en;
-  
-  const [activeTab, setActiveTab] = useState(tabParam === 'register' ? 1 : 0);
   
   // Form states
   const [loginForm, setLoginForm] = useState({

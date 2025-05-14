@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MIRA ACADEMY - Center of Excellence for Professional Training</title>
+  <meta name="description" content="MIRA ACADEMY offers high-quality professional training programs designed to equip you with skills for success in today's job market.">
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-dark: #1d4ed8;
+      --primary-light: #93c5fd;
+      --secondary: #f43f5e;
+      --secondary-dark: #be123c;
+      --accent: #8b5cf6;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      color: #333;
+      line-height: 1.6;
+    }
+    
+    /* Header Styles */
+    header {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: white;
+      padding: 1.5rem 0;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    .container {
+      width: 90%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    
+    .logo {
+      font-size: 1.5rem;
+      font-weight: bold;
+    }
+    
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+    
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+      color: var(--primary-light);
+    }
+    
+    /* Hero Section */
+    .hero {
+      background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary) 100%);
+      color: white;
+      padding: 4rem 0;
+      text-align: center;
+    }
+    
+    .hero h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+    }
+    
+    .hero p {
+      font-size: 1.2rem;
+      max-width: 800px;
+      margin: 0 auto 2rem;
+      opacity: 0.9;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 0.8rem 1.5rem;
+      border-radius: 50px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+    }
+    
+    .btn-primary {
+      background: var(--secondary);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background: var(--secondary-dark);
+      transform: translateY(-3px);
+      box-shadow: 0 10px 20px -10px rgba(0, 0, 0, 0.3);
+    }
+    
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      backdrop-filter: blur(5px);
+      margin-left: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+    
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.3);
+      transform: translateY(-3px);
+    }
+    
+    /* Features Section */
+    .features {
+      padding: 4rem 0;
+      background-color: #f9fafb;
+    }
+    
+    .section-title {
+      text-align: center;
+      margin-bottom: 3rem;
+    }
+    
+    .section-title h2 {
+      font-size: 2rem;
+      color: #111;
+      margin-bottom: 1rem;
+    }
+    
+    .section-title p {
+      color: #666;
+      max-width: 700px;
+      margin: 0 auto;
+    }
+    
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 2rem;
+    }
+    
+    .feature-card {
+      background: white;
+      border-radius: 10px;
+      padding: 2rem;
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-icon {
+      width: 60px;
+      height: 60px;
+      background: var(--primary-light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    
+    .feature-card h3 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      color: #222;
+    }
+    
+    /* Footer */
+    footer {
+      background: #1f2937;
+      color: white;
+      padding: 3rem 0 2rem;
+    }
+    
+    .footer-content {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      margin-bottom: 2rem;
+    }
+    
+    .footer-column h4 {
+      font-size: 1.2rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+    
+    .footer-column h4::after {
+      content: '';
+      position: absolute;
+      bottom: -0.5rem;
+      left: 0;
+      width: 40px;
+      height: 2px;
+      background: var(--primary);
+    }
+    
+    .footer-column ul {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+    
+    .footer-column ul li {
+      margin-bottom: 0.7rem;
+    }
+    
+    .footer-column a {
+      color: #d1d5db;
+      text-decoration: none;
+      transition: color 0.3s;
+    }
+    
+    .footer-column a:hover {
+      color: white;
+    }
+    
+    .copyright {
+      text-align: center;
+      padding-top: 2rem;
+      border-top: 1px solid #374151;
+      color: #9ca3af;
+      font-size: 0.9rem;
+    }
+    
+    /* Responsive Styles */
+    @media (max-width: 768px) {
+      .nav-links {
+        display: none;
+      }
+      
+      .hero h1 {
+        font-size: 2rem;
+      }
+      
+      .btn-secondary {
+        margin: 1rem 0 0 0;
+        display: inline-block;
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container">
+      <nav>
+        <div class="logo">MIRA ACADEMY</div>
+        <div class="nav-links">
+          <a href="/">Home</a>
+          <a href="/courses">Courses</a>
+          <a href="/programs">Programs</a>
+          <a href="/instructors">Instructors</a>
+          <a href="/about">About</a>
+          <a href="/contact">Contact</a>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>Transform Your Future with Professional Training</h1>
+      <p>
+        MIRA ACADEMY is your premier destination for professional education. 
+        Our industry-focused programs are designed to equip you with skills that employers demand.
+      </p>
+      <div>
+        <a href="/programs" class="btn btn-primary">Explore Programs</a>
+        <a href="/contact" class="btn btn-secondary">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>Why Choose MIRA ACADEMY</h2>
+        <p>Discover the advantages that set us apart from other training institutions</p>
+      </div>
+      
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 14l9-5-9-5-9 5 9 5z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v12m0 0l-3-3m3 3l3-3" />
+            </svg>
+          </div>
+          <h3>Industry-Aligned Curriculum</h3>
+          <p>Our courses are developed in collaboration with industry experts to ensure you learn skills that are in demand.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+            </svg>
+          </div>
+          <h3>Expert Instructors</h3>
+          <p>Learn from experienced professionals who bring real-world expertise and practical knowledge to the classroom.</p>
+        </div>
+        
+        <div class="feature-card">
+          <div class="feature-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+            </svg>
+          </div>
+          <h3>Recognized Certification</h3>
+          <p>Earn industry-recognized certificates that boost your credibility and enhance your career prospects.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <div class="footer-content">
+        <div class="footer-column">
+          <h4>About</h4>
+          <ul>
+            <li><a href="/about">Our Story</a></li>
+            <li><a href="/instructors">Our Team</a></li>
+            <li><a href="/testimonials">Testimonials</a></li>
+            <li><a href="/careers">Careers</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>Programs</h4>
+          <ul>
+            <li><a href="/programs/web-development">Web Development</a></li>
+            <li><a href="/programs/data-science">Data Science</a></li>
+            <li><a href="/programs/digital-marketing">Digital Marketing</a></li>
+            <li><a href="/programs/graphic-design">Graphic Design</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>Resources</h4>
+          <ul>
+            <li><a href="/blog">Blog</a></li>
+            <li><a href="/faq">FAQ</a></li>
+            <li><a href="/events">Events</a></li>
+            <li><a href="/support">Support</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-column">
+          <h4>Contact</h4>
+          <ul>
+            <li><a href="mailto:info@miracademy.com">info@miracademy.com</a></li>
+            <li><a href="tel:+1-555-123-4567">+1 (555) 123-4567</a></li>
+            <li><a href="/contact">Contact Form</a></li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="copyright">
+        &copy; 2023 MIRA ACADEMY. All rights reserved.
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Simple client-side routing for demonstration
+    document.addEventListener('DOMContentLoaded', () => {
+      const navLinks = document.querySelectorAll('a[href^="/"]');
+      
+      navLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const path = link.getAttribute('href');
+          
+          // Update browser URL without reloading the page
+          window.history.pushState({}, '', path);
+          
+          // In a real SPA, you would load the appropriate content here
+          console.log(`Navigation to: ${path}`);
+        });
+      });
+      
+      // Handle back/forward browser navigation
+      window.addEventListener('popstate', () => {
+        console.log(`Navigation to: ${window.location.pathname}`);
+      });
+    });
+  </script>
+</body>
+</html> 
