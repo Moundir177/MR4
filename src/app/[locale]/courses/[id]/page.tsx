@@ -16,6 +16,13 @@ import {
   ChevronDownIcon
 } from '@heroicons/react/24/solid';
 import CourseDetailClient from './CourseDetailClient';
+import { locales } from '@/i18n/settings';
+import { courseIds, generateCourseStaticParams } from '@/utils/generateStaticParams';
+
+// This function is required for static exports with dynamic routes
+export function generateStaticParams() {
+  return generateCourseStaticParams();
+}
 
 // Course detail page dictionary
 const courseDetailDictionary = {
