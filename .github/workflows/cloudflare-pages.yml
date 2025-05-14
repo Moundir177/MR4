@@ -29,6 +29,13 @@ jobs:
         
       - name: Build project
         run: npm run build
+      
+      # Debug step to check directory structure  
+      - name: Debug directory structure
+        run: |
+          ls -la
+          ls -la .next || echo ".next directory does not exist"
+          ls -la .next/standalone || echo ".next/standalone directory does not exist"
         
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/pages-action@v1
@@ -36,7 +43,7 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: miracademy
-          directory: .next/standalone
+          directory: .next
           # Remove gitHubToken to avoid using GitHub deployments entirely
           # gitHubToken: ${{ secrets.GITHUB_TOKEN }} 
           
