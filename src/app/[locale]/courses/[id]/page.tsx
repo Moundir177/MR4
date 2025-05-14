@@ -1,20 +1,5 @@
-'use client';
-
 import React from 'react';
-import Image from 'next/image';
 import Link from 'next/link';
-import { 
-  ClockIcon, 
-  UserGroupIcon, 
-  AcademicCapIcon,
-  StarIcon,
-  CheckCircleIcon,
-  PlayCircleIcon,
-  ShoppingCartIcon,
-  HeartIcon,
-  BookmarkIcon,
-  ChevronDownIcon
-} from '@heroicons/react/24/solid';
 import CourseDetailClient from './CourseDetailClient';
 import { locales } from '@/i18n/settings';
 import { courseIds, generateCourseStaticParams } from '@/utils/generateStaticParams';
@@ -259,7 +244,7 @@ const getLevelText = (level: string, dictionary: any) => {
   return dictionary[levelMap[level] || 'allLevels'];
 };
 
-// Client-side date formatting function to prevent hydration mismatch
+// Server-side date formatting function
 const formatDate = (dateString: string, locale: string) => {
   // Use a consistent date format that will be the same on server and client
   const date = new Date(dateString);
