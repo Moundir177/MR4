@@ -6,6 +6,11 @@ on:
       - master  # Set this to your main branch name
   workflow_dispatch: # Allow manual triggering
 
+# Add permissions for the GITHUB_TOKEN
+permissions:
+  contents: read
+  deployments: write
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -32,4 +37,5 @@ jobs:
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           projectName: miracademy
           directory: .next/standalone
-          gitHubToken: ${{ secrets.GITHUB_TOKEN }} 
+          # Remove gitHubToken to avoid using GitHub deployments entirely
+          # gitHubToken: ${{ secrets.GITHUB_TOKEN }} 
