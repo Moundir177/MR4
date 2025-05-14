@@ -13,7 +13,7 @@ const nextConfig = {
   },
   // Return file paths rather than URLs for fonts to support variable fonts
   assetPrefix: undefined,
-  output: 'standalone',
+  output: 'export',
 };
 
 module.exports = nextConfig; 
