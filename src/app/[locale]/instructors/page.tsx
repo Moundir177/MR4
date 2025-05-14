@@ -234,24 +234,17 @@ const instructorsData = [
 const formatDate = (dateString: string, locale: string) => {
   const date = new Date(dateString);
   
-  if (locale === 'en') {
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'long'
-    });
-  } else if (locale === 'fr') {
-    return date.toLocaleDateString('fr-FR', { 
-      year: 'numeric', 
-      month: 'long'
-    });
-  } else if (locale === 'ar') {
-    return date.toLocaleDateString('ar-SA', { 
-      year: 'numeric', 
-      month: 'long'
-    });
-  } else {
-    return date.toLocaleDateString();
-  }
+  // Simple manual formatting to avoid Intl API which can differ between server/client
+  const months = {
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+    ar: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+  };
+  
+  const month = months[locale as keyof typeof months]?.[date.getMonth()] || months.en[date.getMonth()];
+  const year = date.getFullYear();
+  
+  return `${month} ${year}`;
 };
 
 export default function InstructorsPage() {

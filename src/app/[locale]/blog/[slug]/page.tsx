@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import type { Locale } from '@/i18n/settings';
 import { getDictionary } from '@/i18n/get-dictionary';
@@ -5,6 +7,7 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 // In a real app, this would come from a database or API
 const getBlogPostBySlug = (slug: string) => {
@@ -34,17 +37,48 @@ const getBlogPostBySlug = (slug: string) => {
   };
 };
 
-export default async function BlogPost({
-  params: { locale, slug },
-}: {
-  params: { locale: Locale; slug: string };
-}) {
-  const dict = await getDictionary(locale);
+// Format date for specific locale
+const formatDate = (dateString: string, locale: string) => {
+  const date = new Date(dateString);
+  
+  // Simple manual formatting to avoid Intl API which can differ between server/client
+  const months = {
+    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+    fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
+    ar: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
+  };
+  
+  const month = months[locale as keyof typeof months]?.[date.getMonth()] || months.en[date.getMonth()];
+  const day = date.getDate();
+  const year = date.getFullYear();
+  
+  if (locale === 'ar') {
+    return `${day} ${month} ${year}`;
+  }
+  
+  return `${month} ${day}, ${year}`;
+};
+
+export default function BlogPost() {
+  // Get locale and slug from pathname
+  const pathname = usePathname();
+  const pathParts = pathname?.split('/') || [];
+  const locale = pathParts[1] || 'en';
+  const slug = pathParts[3] || '';
+  
   const post = getBlogPostBySlug(slug);
+  
+  // We'll fetch dictionary client-side instead of server-side
+  const dict = {
+    blog: {
+      backToBlog: locale === 'fr' ? 'Retour au blog' : locale === 'ar' ? 'العودة إلى المدونة' : 'Back to blog',
+      imageAlt: locale === 'fr' ? 'Image de l\'article' : locale === 'ar' ? 'صورة المقال' : 'Article image'
+    }
+  };
 
   return (
     <main className="min-h-screen bg-neutral">
-      <Header locale={locale} dictionary={dict} />
+      <Header locale={locale as Locale} dictionary={dict} />
       <div className="container mx-auto px-4 py-12">
         <Link 
           href={`/${locale}/blog`}
@@ -57,7 +91,7 @@ export default async function BlogPost({
           <div className="mb-6">
             <h1 className="text-3xl md:text-4xl font-bold mb-4">{post.title}</h1>
             <div className="text-gray-600">
-              {post.date} • {post.author}
+              {formatDate(post.date, locale)} • {post.author}
             </div>
           </div>
           
@@ -73,9 +107,9 @@ export default async function BlogPost({
           />
         </article>
       </div>
-      <Footer locale={locale} dictionary={dict} />
+      <Footer />
       <div className="fixed bottom-4 right-4 z-50">
-        <LanguageSwitcher currentLocale={locale} />
+        <LanguageSwitcher />
       </div>
     </main>
   );

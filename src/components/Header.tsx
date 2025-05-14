@@ -20,9 +20,11 @@ interface HeaderProps {
 
 export default function Header({ locale, dictionary }: HeaderProps) {
   const pathname = usePathname();
-  // Use useState with undefined initial state to avoid hydration mismatch
-  const [isScrolled, setIsScrolled] = useState<boolean | undefined>(undefined);
+  // Use useState with null initial state to avoid hydration mismatch
+  const [isScrolled, setIsScrolled] = useState<boolean | null>(null);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  // Track if component is mounted to avoid hydration mismatch
+  const [isMounted, setIsMounted] = useState(false);
 
   // Create a dictionary fallback
   const headerDict = dictionary?.header || {
@@ -55,8 +57,7 @@ export default function Header({ locale, dictionary }: HeaderProps) {
 
   // Initialize scroll state on the client-side only to avoid hydration mismatch
   useEffect(() => {
-    setIsScrolled(window.scrollY > 10);
-    
+    setIsMounted(true);
     const handleScroll = () => {
       if (window.scrollY > 10) {
         setIsScrolled(true);
@@ -64,6 +65,9 @@ export default function Header({ locale, dictionary }: HeaderProps) {
         setIsScrolled(false);
       }
     };
+    
+    // Set initial value
+    handleScroll();
     
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
@@ -79,16 +83,14 @@ export default function Header({ locale, dictionary }: HeaderProps) {
     { name: headerDict.faq, href: `/${locale}/faq` },
   ];
   
-  // Only render styled content after isScrolled has been set on the client
-  // This prevents hydration mismatch between server and client
-  const isLoaded = isScrolled !== undefined;
+  // Default styling before client-side hydration
+  const defaultHeaderClass = "fixed top-0 left-0 right-0 z-50 transition-all duration-300 bg-transparent py-4";
   
   return (
-    <header className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      // Use a default value during server rendering (transparent background)
-      !isLoaded ? 'bg-transparent py-4' :
-      isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'
-    }`}>
+    <header className={isMounted 
+      ? `fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${isScrolled ? 'bg-white shadow-md py-2' : 'bg-transparent py-4'}`
+      : defaultHeaderClass
+    }>
       <Disclosure as="nav" className="container mx-auto px-4 sm:px-6 lg:px-8">
         {({ open }) => (
           <React.Fragment>
@@ -111,9 +113,11 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                     className={`px-3 py-2 text-sm font-medium rounded-md ${
                       pathname === item.href
                         ? 'text-primary bg-white/20 backdrop-blur-sm'
-                        : !isLoaded || !isScrolled 
-                          ? 'text-white hover:text-white/80 font-semibold transition-colors'
-                          : 'text-gray-700 hover:text-primary transition-colors'
+                        : isMounted && isScrolled !== null
+                          ? (isScrolled 
+                              ? 'text-gray-700 hover:text-primary transition-colors' 
+                              : 'text-white hover:text-white/80 font-semibold transition-colors')
+                          : 'text-white hover:text-white/80 font-semibold transition-colors'
                     }`}
                   >
                     {item.name}
@@ -126,7 +130,11 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                 {/* Shopping Cart */}
                 <div className="relative">
                   <button 
-                    className={`p-2 ${!isLoaded || !isScrolled ? 'text-white' : 'text-gray-600'} hover:text-primary relative`}
+                    className={`p-2 ${
+                      isMounted && isScrolled !== null
+                        ? (isScrolled ? 'text-gray-600' : 'text-white')
+                        : 'text-white'
+                    } hover:text-primary relative`}
                     onClick={toggleCart}
                     aria-label="Shopping Cart"
                   >
@@ -143,13 +151,13 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                     <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg py-2 z-50">
                       <div className="p-3 border-b border-gray-100">
                         <h3 className="font-semibold text-gray-800">
-                          {dictionary[locale as keyof typeof dictionary]?.cart?.title || 'Shopping Cart'}
+                          {dictionary[locale]?.cart?.title || 'Shopping Cart'}
                         </h3>
                       </div>
                       
                       {cartItems.length === 0 ? (
                         <div className="p-4 text-center text-gray-500">
-                          {dictionary[locale as keyof typeof dictionary]?.cart?.empty || 'Your cart is empty'}
+                          {dictionary[locale]?.cart?.empty || 'Your cart is empty'}
                         </div>
                       ) : (
                         <div>
@@ -173,7 +181,7 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                                         className="text-xs text-red-500 hover:text-red-700"
                                         onClick={() => removeFromCart(item.id)}
                                       >
-                                        {dictionary[locale as keyof typeof dictionary]?.cart?.remove || 'Remove'}
+                                        {dictionary[locale]?.cart?.remove || 'Remove'}
                                       </button>
                                     </div>
                                   </div>
@@ -185,7 +193,7 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                           <div className="border-t border-gray-100 p-3">
                             <div className="flex justify-between mb-3">
                               <span className="font-medium text-gray-800">
-                                {dictionary[locale as keyof typeof dictionary]?.cart?.total || 'Total'}:
+                                {dictionary[locale]?.cart?.total || 'Total'}:
                               </span>
                               <span className="font-bold text-gray-800">${getCartTotal().toFixed(2)}</span>
                             </div>
@@ -193,7 +201,7 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                               href={`/${locale}/checkout`}
                               className="block w-full bg-primary hover:bg-primary-dark text-white text-center py-2 px-4 rounded-lg font-medium transition-colors"
                             >
-                              {dictionary[locale as keyof typeof dictionary]?.cart?.checkout || 'Checkout'}
+                              {dictionary[locale]?.cart?.checkout || 'Checkout'}
                             </Link>
                           </div>
                         </div>
@@ -213,13 +221,27 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                         {({ open }) => (
                           <React.Fragment>
                             <Disclosure.Button className={`flex items-center gap-2 text-sm px-4 py-2 rounded-full ${
-                              !isLoaded || !isScrolled 
-                                ? 'bg-white/10 backdrop-blur-sm border-white/20 border text-white' 
-                                : 'border border-gray-200 hover:border-gray-300 text-gray-700'
+                              isMounted && isScrolled !== null
+                                ? (isScrolled 
+                                  ? 'border border-gray-200 hover:border-gray-300 text-gray-700' 
+                                  : 'bg-white/10 backdrop-blur-sm border-white/20 border text-white')
+                                : 'bg-white/10 backdrop-blur-sm border-white/20 border text-white'
                             } transition-colors`}>
-                              <UserCircleIcon className={`h-6 w-6 ${!isLoaded || !isScrolled ? 'text-white' : 'text-gray-600'}`} />
-                              <span className={`font-medium ${!isLoaded || !isScrolled ? 'text-white' : 'text-gray-700'}`}>Ahmed Hassan</span>
-                              <ChevronDownIcon className={`h-4 w-4 ${!isLoaded || !isScrolled ? 'text-white/70' : 'text-gray-500'} transition-transform ${
+                              <UserCircleIcon className={`h-6 w-6 ${
+                                isMounted && isScrolled !== null
+                                  ? (isScrolled ? 'text-gray-600' : 'text-white')
+                                  : 'text-white'
+                              }`} />
+                              <span className={`font-medium ${
+                                isMounted && isScrolled !== null
+                                  ? (isScrolled ? 'text-gray-700' : 'text-white')
+                                  : 'text-white'
+                              }`}>Ahmed Hassan</span>
+                              <ChevronDownIcon className={`h-4 w-4 ${
+                                isMounted && isScrolled !== null
+                                  ? (isScrolled ? 'text-gray-500' : 'text-white/70')
+                                  : 'text-white/70'
+                              } transition-transform ${
                                 open ? 'rotate-180 transform' : ''
                               }`} />
                             </Disclosure.Button>
@@ -270,7 +292,9 @@ export default function Header({ locale, dictionary }: HeaderProps) {
                       <Link
                         href={`/${locale}/auth?tab=login`}
                         className={`font-medium ${
-                          !isLoaded || !isScrolled ? 'text-white hover:text-white/80' : 'text-primary hover:text-primary-dark'
+                          isMounted && isScrolled !== null
+                            ? (isScrolled ? 'text-primary hover:text-primary-dark' : 'text-white hover:text-white/80')
+                            : 'text-white hover:text-white/80'
                         }`}
                       >
                         {headerDict.login}
@@ -289,9 +313,11 @@ export default function Header({ locale, dictionary }: HeaderProps) {
               {/* Mobile menu button */}
               <div className="flex items-center md:hidden">
                 <Disclosure.Button className={`inline-flex items-center justify-center p-2 rounded-md ${
-                  !isLoaded || !isScrolled 
-                    ? 'text-white hover:bg-white/10' 
-                    : 'text-gray-700 hover:bg-gray-100'
+                  isMounted && isScrolled !== null
+                    ? (isScrolled 
+                      ? 'text-gray-700 hover:bg-gray-100' 
+                      : 'text-white hover:bg-white/10')
+                    : 'text-white hover:bg-white/10'
                 } hover:text-primary focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary`}>
                   <span className="sr-only">Open main menu</span>
                   {open ? (
@@ -305,86 +331,76 @@ export default function Header({ locale, dictionary }: HeaderProps) {
             
             {/* Mobile Navigation Menu */}
             <Disclosure.Panel className="md:hidden">
-              <div className="px-2 pt-2 pb-3 space-y-1">
+              <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
                 {navigation.map((item) => (
-                  <Disclosure.Button
+                  <Link
                     key={item.name}
-                    as={Link}
                     href={item.href}
                     className={`block px-3 py-2 rounded-md text-base font-medium ${
                       pathname === item.href
-                        ? 'bg-primary-light text-primary'
-                        : 'text-gray-700 hover:bg-gray-100 hover:text-primary'
+                        ? 'bg-primary/10 text-primary'
+                        : 'text-gray-700 hover:bg-gray-50 hover:text-primary'
                     }`}
                   >
                     {item.name}
-                  </Disclosure.Button>
+                  </Link>
                 ))}
               </div>
               
-              {/* Mobile Auth Section */}
-              <div className="pt-4 pb-3 border-t border-gray-200">
-                {isAuthenticated ? (
-                  <div>
-                    <div className="flex items-center px-4">
-                      <div className="flex-shrink-0">
-                        <UserCircleIcon className="h-10 w-10 text-gray-500" />
-                      </div>
-                      <div className="ml-3">
-                        <div className="text-base font-medium text-gray-800">Ahmed Hassan</div>
-                        <div className="text-sm font-medium text-gray-500">ahmed.hassan@example.com</div>
-                      </div>
+              {isAuthenticated ? (
+                <div className="pt-4 pb-3 border-t border-gray-200">
+                  <div className="flex items-center px-5">
+                    <div className="flex-shrink-0">
+                      <UserCircleIcon className="h-10 w-10 text-gray-400" />
                     </div>
-                    <div className="mt-3 px-2 space-y-1">
-                      <Disclosure.Button
-                        as={Link}
-                        href={`/${locale}/dashboard`}
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                      >
-                        {headerDict.dashboard}
-                      </Disclosure.Button>
-                      <Disclosure.Button
-                        as={Link}
-                        href={`/${locale}/profile`}
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                      >
-                        {headerDict.profile}
-                      </Disclosure.Button>
-                      <Disclosure.Button
-                        as={Link}
-                        href={`/${locale}/settings`}
-                        className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                      >
-                        {headerDict.settings}
-                      </Disclosure.Button>
-                      <Disclosure.Button
-                        as="button"
-                        className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
-                        onClick={() => setIsAuthenticated(false)}
-                      >
-                        {headerDict.logout}
-                      </Disclosure.Button>
+                    <div className="ml-3">
+                      <div className="text-base font-medium text-gray-800">Ahmed Hassan</div>
+                      <div className="text-sm font-medium text-gray-500">ahmed@example.com</div>
                     </div>
                   </div>
-                ) : (
-                  <div className="px-2 space-y-1">
-                    <Disclosure.Button
-                      as={Link}
-                      href={`/${locale}/auth?tab=login`}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
+                  <div className="mt-3 px-2 space-y-1">
+                    <Link
+                      href={`/${locale}/dashboard`}
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
                     >
-                      {headerDict.login}
-                    </Disclosure.Button>
-                    <Disclosure.Button
-                      as={Link}
-                      href={`/${locale}/auth?tab=register`}
-                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-100 hover:text-primary"
+                      {headerDict.dashboard}
+                    </Link>
+                    <Link
+                      href={`/${locale}/profile`}
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
                     >
-                      {headerDict.register}
-                    </Disclosure.Button>
+                      {headerDict.profile}
+                    </Link>
+                    <Link
+                      href={`/${locale}/settings`}
+                      className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
+                    >
+                      {headerDict.settings}
+                    </Link>
+                    <button
+                      className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-primary"
+                      onClick={() => setIsAuthenticated(false)}
+                    >
+                      {headerDict.logout}
+                    </button>
                   </div>
-                )}
-              </div>
+                </div>
+              ) : (
+                <div className="pt-4 pb-3 border-t border-gray-200 px-5 flex flex-col space-y-3">
+                  <Link
+                    href={`/${locale}/auth?tab=login`}
+                    className="w-full px-4 py-2 text-center border border-primary text-primary rounded-lg font-medium hover:bg-primary/5 transition-colors"
+                  >
+                    {headerDict.login}
+                  </Link>
+                  <Link
+                    href={`/${locale}/auth?tab=register`}
+                    className="w-full px-4 py-2 text-center bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors"
+                  >
+                    {headerDict.register}
+                  </Link>
+                </div>
+              )}
             </Disclosure.Panel>
           </React.Fragment>
         )}

@@ -16,6 +16,14 @@ const stats = [
   { key: 'partners', value: '20+' },
 ];
 
+// Default fallback labels in case dictionary is missing
+const fallbackLabels = {
+  students: 'Students Enrolled',
+  courses: 'Courses Available',
+  instructors: 'Expert Instructors',
+  partners: 'Industry Partners'
+};
+
 export default function Stats({ dictionary }: StatsProps) {
   const container = {
     hidden: { opacity: 0 },
@@ -52,7 +60,7 @@ export default function Stats({ dictionary }: StatsProps) {
                 {stat.value}
               </h3>
               <p className="text-sm md:text-base text-gray-600">
-                {dictionary.home.stats[stat.key]}
+                {dictionary?.home?.stats?.[stat.key] || fallbackLabels[stat.key as keyof typeof fallbackLabels]}
               </p>
             </motion.div>
           ))}
