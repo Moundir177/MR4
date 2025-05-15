@@ -288,13 +288,17 @@ export default function CourseDetailPage({ params }: { params: { id: string, loc
     );
   }
 
+  // Pre-compute values that required function calls
+  const levelText = getLevelText(course.level, dictionary);
+  const formattedDate = formatDate(course.lastUpdated, locale);
+
   return (
     <CourseDetailClient 
       course={course} 
       locale={locale} 
       dictionary={dictionary}
-      getLevelText={getLevelText}
-      formatDate={formatDate}
+      levelText={levelText}
+      formattedDate={formattedDate}
     />
   );
 } 

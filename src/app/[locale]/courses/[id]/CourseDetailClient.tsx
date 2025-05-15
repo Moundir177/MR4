@@ -18,16 +18,16 @@ interface CourseDetailClientProps {
   course: any;
   locale: string;
   dictionary: any;
-  getLevelText: (level: string, dictionary: any) => string;
-  formatDate: (dateString: string, locale: string) => string;
+  levelText: string;
+  formattedDate: string;
 }
 
 export default function CourseDetailClient({ 
   course, 
   locale, 
   dictionary,
-  getLevelText,
-  formatDate 
+  levelText,
+  formattedDate 
 }: CourseDetailClientProps) {
   const [activeTab, setActiveTab] = useState('overview');
   const [inWishlist, setInWishlist] = useState(false);
@@ -82,8 +82,8 @@ export default function CourseDetailClient({
             </div>
             
             <div className="flex items-center text-sm text-gray-500">
-              <span className="mr-4">{dictionary.lastUpdated}: {formatDate(course.lastUpdated, locale)}</span>
-              <span className="mr-4">{dictionary.difficultyLevel}: {getLevelText(course.level, dictionary)}</span>
+              <span className="mr-4">{dictionary.lastUpdated}: {formattedDate}</span>
+              <span className="mr-4">{dictionary.difficultyLevel}: {levelText}</span>
             </div>
           </div>
           
