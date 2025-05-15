@@ -8,10 +8,19 @@ import LanguageSwitcher from '@/components/LanguageSwitcher';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/dist/client/components/not-found';
+import { locales } from '@/i18n/settings';
 
 // Define program page params
 export async function generateStaticParams() {
-  return Object.keys(programDetails).map((id) => ({ id }));
+  const ids = Object.keys(programDetails);
+  
+  // Generate all combinations of locales and program IDs
+  return locales.flatMap(locale => 
+    ids.map(id => ({
+      locale,
+      id
+    }))
+  );
 }
 
 // This is used to trigger not-found.tsx

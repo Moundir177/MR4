@@ -19,6 +19,12 @@ import Header from '@/components/Header';
 import Footer from '@/components/Footer';
 import BlogPosts from '@/components/BlogPosts';
 import LanguageSwitcher from '@/components/LanguageSwitcher';
+import { locales } from '@/i18n/settings';
+
+// This function is required for static exports with dynamic routes
+export function generateStaticParams() {
+  return locales.map(locale => ({ locale }));
+}
 
 // Blog page dictionary
 const blogDictionary = {

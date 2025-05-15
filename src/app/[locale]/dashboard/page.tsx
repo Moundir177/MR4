@@ -17,6 +17,12 @@ import {
   PlusIcon,
   StarIcon
 } from '@heroicons/react/24/solid';
+import { locales } from '@/i18n/settings';
+
+// This function is required for static exports with dynamic routes
+export function generateStaticParams() {
+  return locales.map(locale => ({ locale }));
+}
 
 // Dashboard page dictionary
 const dashboardDictionary = {
