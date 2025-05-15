@@ -3,6 +3,9 @@ import type { Locale } from '@/i18n/settings';
 import { locales } from '@/i18n/settings';
 import LearningClient from './LearningClient';
 
+// Set this page to be dynamically rendered
+export const dynamic = 'force-dynamic';
+
 // This function is required for static exports with dynamic routes
 export function generateStaticParams() {
   // For simplicity, we'll just define a few course and module IDs
