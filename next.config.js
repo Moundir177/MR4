@@ -13,6 +13,8 @@ const nextConfig = {
   },
   // Return file paths rather than URLs for fonts to support variable fonts
   assetPrefix: undefined,
+  // Export static files to 'out' directory for Cloudflare Pages
+  output: 'export',
 };
 
 module.exports = nextConfig; 

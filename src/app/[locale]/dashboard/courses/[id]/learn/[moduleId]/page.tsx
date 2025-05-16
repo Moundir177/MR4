@@ -320,18 +320,17 @@ Together, these three technologies form the foundation of front-end web developm
 
 export default function ModulePage({ 
   params, 
-  searchParams 
+  searchParams = {}
 }: { 
   params: { locale: string, id: string, moduleId: string },
-  searchParams: { lesson?: string }
+  searchParams?: { lesson?: string }
 }) {
   const locale = params.locale || 'en';
   const courseId = params.id;
   const moduleId = params.moduleId;
-  const lessonId = searchParams.lesson ? parseInt(searchParams.lesson) : undefined;
   
-  // In a real app, you would fetch the module data based on the moduleId
-  // and apply the current lesson from the searchParams
+  const lessonId = searchParams?.lesson ? parseInt(searchParams.lesson) : undefined;
+  
   const updatedModuleData = {
     ...moduleData,
     currentLessonId: lessonId || moduleData.currentLessonId
