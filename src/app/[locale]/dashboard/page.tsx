@@ -1,5 +1,3 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -18,6 +16,8 @@ import {
   StarIcon
 } from '@heroicons/react/24/solid';
 import { locales } from '@/i18n/settings';
+import type { Locale } from '@/i18n/settings';
+import { getDictionary } from '@/i18n/get-dictionary';
 
 // This function is required for static exports with dynamic routes
 export function generateStaticParams() {
@@ -382,56 +382,65 @@ const recentAchievements = [
   }
 ];
 
-// Format date for UI display
+// Date formatting function for events
 const formatEventDate = (dateString: string, locale: string) => {
   const date = new Date(dateString);
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
   
-  const tomorrow = new Date(today);
+  const now = new Date();
+  const tomorrow = new Date(now);
   tomorrow.setDate(tomorrow.getDate() + 1);
   
-  // Check if event is today
-  if (date.getDate() === today.getDate() && 
-      date.getMonth() === today.getMonth() && 
-      date.getFullYear() === today.getFullYear()) {
-    
-    // Format time only
-    return date.toLocaleTimeString(locale === 'en' ? 'en-US' : locale === 'fr' ? 'fr-FR' : 'ar-SA', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  } 
-  // Check if event is tomorrow
-  else if (date.getDate() === tomorrow.getDate() && 
-           date.getMonth() === tomorrow.getMonth() && 
-           date.getFullYear() === tomorrow.getFullYear()) {
-    
-    // Format tomorrow with time
-    return locale === 'en' 
-      ? `Tomorrow at ${date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`
-      : locale === 'fr'
-        ? `Demain à ${date.toLocaleTimeString('fr-FR', { hour: '2-digit', minute: '2-digit' })}`
-        : `غدًا في ${date.toLocaleTimeString('ar-SA', { hour: '2-digit', minute: '2-digit' })}`;
-  } 
-  // For other dates
-  else {
-    // Format full date with time
-    return date.toLocaleString(locale === 'en' ? 'en-US' : locale === 'fr' ? 'fr-FR' : 'ar-SA', {
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
-    });
+  const isToday = date.getDate() === now.getDate() && 
+                 date.getMonth() === now.getMonth() && 
+                 date.getFullYear() === now.getFullYear();
+  
+  const isTomorrow = date.getDate() === tomorrow.getDate() && 
+                    date.getMonth() === tomorrow.getMonth() && 
+                    date.getFullYear() === tomorrow.getFullYear();
+  
+  // Format time
+  const hours = date.getHours();
+  const minutes = date.getMinutes();
+  
+  const formattedTime = locale === 'en' 
+    ? `${hours % 12 || 12}:${minutes.toString().padStart(2, '0')} ${hours >= 12 ? 'PM' : 'AM'}`
+    : `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+  
+  if (isToday) {
+    return {
+      date: locale === 'en' ? 'Today' : locale === 'fr' ? 'Aujourd\'hui' : 'اليوم',
+      time: formattedTime
+    };
   }
+  
+  if (isTomorrow) {
+    return {
+      date: locale === 'en' ? 'Tomorrow' : locale === 'fr' ? 'Demain' : 'غدًا',
+      time: formattedTime
+    };
+  }
+  
+  // Format date
+  const day = date.getDate();
+  const month = locale === 'en' 
+    ? ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'][date.getMonth()]
+    : locale === 'fr'
+      ? ['Jan', 'Fév', 'Mar', 'Avr', 'Mai', 'Juin', 'Juil', 'Août', 'Sep', 'Oct', 'Nov', 'Déc'][date.getMonth()]
+      : ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر'][date.getMonth()];
+  
+  return {
+    date: locale === 'ar' ? `${day} ${month}` : `${month} ${day}`,
+    time: formattedTime
+  };
 };
 
-export default function DashboardPage() {
-  // Get locale from pathname
-  const pathname = usePathname();
-  const locale = pathname.split('/')[1] || 'en';
+// Server component
+export default async function DashboardPage({ params }: { params: { locale: Locale } }) {
+  const locale = params.locale;
+  const dict = await getDictionary(locale);
   
-  const dictionary = dashboardDictionary[locale as keyof typeof dashboardDictionary] || dashboardDictionary.en;
+  // Get dashboard dictionary
+  const t = dashboardDictionary[locale as keyof typeof dashboardDictionary] || dashboardDictionary.en;
   
   // Check if the UI direction should be RTL (for Arabic)
   const isRTL = locale === 'ar';
@@ -458,9 +467,9 @@ export default function DashboardPage() {
               />
             </div>
             <div>
-              <h1 className="text-2xl font-bold">{dictionary.welcome}, {user.name}!</h1>
+              <h1 className="text-2xl font-bold">{t.welcome}, {user.name}!</h1>
               <p className="text-white/80">
-                {enrolledCourses.length} {enrolledCourses.length === 1 ? dictionary.myCourses.toLowerCase() : dictionary.myCourses.toLowerCase()}
+                {enrolledCourses.length} {enrolledCourses.length === 1 ? t.myCourses.toLowerCase() : t.myCourses.toLowerCase()}
               </p>
             </div>
           </div>
@@ -472,9 +481,9 @@ export default function DashboardPage() {
             {/* Achievements Summary */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-800">{dictionary.achievements}</h2>
+                <h2 className="text-xl font-bold text-gray-800">{t.achievements}</h2>
                 <Link href={`/${locale}/achievements`} className="text-primary hover:text-primary-dark text-sm font-medium flex items-center">
-                  {dictionary.viewAll}
+                  {t.viewAll}
                   <ArrowRightIcon className="h-4 w-4 ml-1" />
                 </Link>
               </div>
@@ -526,9 +535,9 @@ export default function DashboardPage() {
             {/* In Progress Courses */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex justify-between items-center mb-4">
-                <h2 className="text-xl font-bold text-gray-800">{dictionary.inProgress}</h2>
+                <h2 className="text-xl font-bold text-gray-800">{t.inProgress}</h2>
                 <Link href={`/${locale}/my-learning`} className="text-primary hover:text-primary-dark text-sm font-medium flex items-center">
-                  {dictionary.viewAll}
+                  {t.viewAll}
                   <ArrowRightIcon className="h-4 w-4 ml-1" />
                 </Link>
               </div>
@@ -550,7 +559,7 @@ export default function DashboardPage() {
                           {course.title[locale as keyof typeof course.title]}
                         </h3>
                         <p className="text-sm text-gray-500 mb-2">
-                          {dictionary.instructor}: {course.instructor}
+                          {t.instructor}: {course.instructor}
                         </p>
                         <div className="mb-3">
                           <div className="w-full bg-gray-200 rounded-full h-2">
@@ -560,19 +569,19 @@ export default function DashboardPage() {
                             ></div>
                           </div>
                           <div className="flex justify-between text-xs text-gray-500 mt-1">
-                            <span>{course.progress}% {dictionary.completed.toLowerCase()}</span>
-                            <span>{course.completedLessons}/{course.totalLessons} {dictionary.lessons}</span>
+                            <span>{course.progress}% {t.completed.toLowerCase()}</span>
+                            <span>{course.completedLessons}/{course.totalLessons} {t.lessons}</span>
                           </div>
                         </div>
                         <div className="flex flex-col sm:flex-row items-center">
                           <p className="text-sm text-gray-600 mb-2 sm:mb-0 sm:mr-4 truncate max-w-xs">
-                            {dictionary.continueWhere}: {course.lastLesson[locale as keyof typeof course.lastLesson]}
+                            {t.continueWhere}: {course.lastLesson[locale as keyof typeof course.lastLesson]}
                           </p>
                           <Link
                             href={`/${locale}/courses/${course.id}`}
                             className="px-4 py-1.5 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-colors whitespace-nowrap"
                           >
-                            {dictionary.continue}
+                            {t.continue}
                           </Link>
                         </div>
                       </div>
@@ -584,7 +593,7 @@ export default function DashboardPage() {
             
             {/* Upcoming Events */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">{dictionary.upcomingEvents}</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">{t.upcomingEvents}</h2>
               
               <div className="space-y-4">
                 {upcomingEvents.map((event) => (
@@ -610,7 +619,7 @@ export default function DashboardPage() {
                       <div className="flex items-center mt-1 text-sm">
                         <ClockIcon className="h-4 w-4 text-gray-400 mr-1" />
                         <span className="text-primary-dark font-medium">
-                          {formatEventDate(event.date, locale)}
+                          {formatEventDate(event.date, locale).date} {formatEventDate(event.date, locale).time}
                         </span>
                       </div>
                     </div>
@@ -618,7 +627,7 @@ export default function DashboardPage() {
                       href="#"
                       className="text-primary hover:text-primary-dark text-sm font-medium whitespace-nowrap"
                     >
-                      {dictionary.view}
+                      {t.view}
                     </Link>
                   </div>
                 ))}
@@ -628,7 +637,7 @@ export default function DashboardPage() {
             {/* Certificates */}
             {completedCourses.length > 0 && (
               <div className="bg-white rounded-xl shadow-sm p-6">
-                <h2 className="text-xl font-bold text-gray-800 mb-4">{dictionary.courseCertificates}</h2>
+                <h2 className="text-xl font-bold text-gray-800 mb-4">{t.courseCertificates}</h2>
                 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {completedCourses.map((course) => (
@@ -651,10 +660,10 @@ export default function DashboardPage() {
                       </div>
                       <div className="flex justify-between text-sm">
                         <button className="text-primary hover:text-primary-dark font-medium">
-                          {dictionary.downloadCertificate}
+                          {t.downloadCertificate}
                         </button>
                         <button className="text-gray-600 hover:text-gray-800">
-                          {dictionary.shareCertificate}
+                          {t.shareCertificate}
                         </button>
                       </div>
                     </div>
@@ -668,7 +677,7 @@ export default function DashboardPage() {
           <div className="space-y-8">
             {/* User Statistics */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">{dictionary.stats}</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">{t.stats}</h2>
               
               <div className="grid grid-cols-2 gap-4">
                 <div className="bg-primary/5 rounded-lg p-4 text-center">
@@ -676,7 +685,7 @@ export default function DashboardPage() {
                     <AcademicCapIcon className="h-5 w-5 text-primary" />
                   </div>
                   <div className="text-xl font-bold text-gray-800">{userStats.coursesCompleted}</div>
-                  <p className="text-xs text-gray-500">{dictionary.coursesCompleted}</p>
+                  <p className="text-xs text-gray-500">{t.coursesCompleted}</p>
                 </div>
                 
                 <div className="bg-primary/5 rounded-lg p-4 text-center">
@@ -684,7 +693,7 @@ export default function DashboardPage() {
                     <ClockIcon className="h-5 w-5 text-primary" />
                   </div>
                   <div className="text-xl font-bold text-gray-800">{userStats.hoursLearned}</div>
-                  <p className="text-xs text-gray-500">{dictionary.hoursLearned}</p>
+                  <p className="text-xs text-gray-500">{t.hoursLearned}</p>
                 </div>
                 
                 <div className="bg-primary/5 rounded-lg p-4 text-center">
@@ -692,7 +701,7 @@ export default function DashboardPage() {
                     <CheckCircleIcon className="h-5 w-5 text-primary" />
                   </div>
                   <div className="text-xl font-bold text-gray-800">{userStats.certificatesEarned}</div>
-                  <p className="text-xs text-gray-500">{dictionary.certificatesEarned}</p>
+                  <p className="text-xs text-gray-500">{t.certificatesEarned}</p>
                 </div>
                 
                 <div className="bg-primary/5 rounded-lg p-4 text-center">
@@ -700,7 +709,7 @@ export default function DashboardPage() {
                     <ChartBarIcon className="h-5 w-5 text-primary" />
                   </div>
                   <div className="text-xl font-bold text-gray-800">{userStats.points}</div>
-                  <p className="text-xs text-gray-500">{dictionary.points}</p>
+                  <p className="text-xs text-gray-500">{t.points}</p>
                 </div>
               </div>
             </div>
@@ -708,7 +717,7 @@ export default function DashboardPage() {
             {/* Notifications */}
             <div className="bg-white rounded-xl shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
-                <h2 className="text-xl font-bold text-gray-800">{dictionary.notifications}</h2>
+                <h2 className="text-xl font-bold text-gray-800">{t.notifications}</h2>
                 <div className="rounded-full bg-primary/10 h-6 w-6 flex items-center justify-center">
                   <span className="text-xs font-medium text-primary">
                     {notifications.filter(n => !n.read).length}
@@ -737,18 +746,18 @@ export default function DashboardPage() {
                     </div>
                   ))
                 ) : (
-                  <p className="text-center text-gray-500 py-4">{dictionary.noNotifications}</p>
+                  <p className="text-center text-gray-500 py-4">{t.noNotifications}</p>
                 )}
               </div>
             </div>
             
             {/* Profile Completion */}
             <div className="bg-white rounded-xl shadow-sm p-6">
-              <h2 className="text-xl font-bold text-gray-800 mb-4">{dictionary.completeProfile}</h2>
+              <h2 className="text-xl font-bold text-gray-800 mb-4">{t.completeProfile}</h2>
               
               <div className="mb-3">
                 <div className="flex justify-between text-sm mb-1">
-                  <span>{dictionary.profileProgress}</span>
+                  <span>{t.profileProgress}</span>
                   <span>{user.profileCompletion}%</span>
                 </div>
                 <div className="w-full bg-gray-200 rounded-full h-2">
@@ -760,14 +769,14 @@ export default function DashboardPage() {
               </div>
               
               <p className="text-sm text-gray-600 mb-4">
-                {dictionary.profilePrompt}
+                {t.profilePrompt}
               </p>
               
               <Link
                 href={`/${locale}/profile`}
                 className="block w-full text-center px-4 py-2 bg-primary hover:bg-primary-dark text-white font-medium rounded-lg transition-colors"
               >
-                {dictionary.complete}
+                {t.complete}
               </Link>
             </div>
           </div>

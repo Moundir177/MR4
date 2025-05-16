@@ -1,9 +1,6 @@
-'use client';
-
-import React, { useState } from 'react';
+import React from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { 
   CalendarIcon, 
   TagIcon, 
@@ -12,6 +9,7 @@ import {
   ChevronRightIcon,
   ArrowRightIcon,
   BookmarkIcon,
+  ClockIcon
 } from '@heroicons/react/24/solid';
 import type { Locale } from '@/i18n/settings';
 import { getDictionary } from '@/i18n/get-dictionary';
@@ -244,7 +242,7 @@ const blogPosts = [
     id: 'article5',
     title: {
       en: 'How to Stay Motivated During Your Learning Journey',
-      fr: 'Comment rester motivé pendant votre parcours d\'apprentissage',
+      fr: 'Comment rester motivé pendant votre parcours d\'apprentage',
       ar: 'كيفية البقاء متحمسًا خلال رحلة التعلم الخاصة بك'
     },
     excerpt: {
@@ -296,275 +294,173 @@ const blogPosts = [
   },
 ];
 
-// Format date for specific locale
+// Get featured post
+const featuredPost = blogPosts.find(post => post.featured);
+
+// Date formatting function
 const formatDate = (dateString: string, locale: string) => {
-  const date = new Date(dateString);
-  
-  // Simple manual formatting to avoid Intl API which can differ between server/client
-  const months = {
-    en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-    fr: ['Janvier', 'Février', 'Mars', 'Avril', 'Mai', 'Juin', 'Juillet', 'Août', 'Septembre', 'Octobre', 'Novembre', 'Décembre'],
-    ar: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو', 'يوليو', 'أغسطس', 'سبتمبر', 'أكتوبر', 'نوفمبر', 'ديسمبر']
-  };
-  
-  const month = months[locale as keyof typeof months]?.[date.getMonth()] || months.en[date.getMonth()];
-  const day = date.getDate();
-  const year = date.getFullYear();
-  
-  if (locale === 'ar') {
-    return `${day} ${month} ${year}`;
-  }
-  
-  return `${month} ${day}, ${year}`;
+  if (!dateString) return '';
+  return new Date(dateString).toLocaleDateString(
+    locale === 'en' ? 'en-US' : locale === 'fr' ? 'fr-FR' : 'ar-SA', 
+    { year: 'numeric', month: 'long', day: 'numeric' }
+  );
 };
 
-export default function BlogPage() {
-  // Get locale from pathname
-  const pathname = usePathname();
-  const locale = pathname?.split('/')[1] || 'en';
+// Convert to server component
+export default async function BlogPage({ params }: { params: { locale: Locale } }) {
+  const locale = params.locale;
+  const dict = await getDictionary(locale);
   
-  const dictionary = blogDictionary[locale as keyof typeof blogDictionary] || blogDictionary.en;
+  // Get current dictionary based on locale
+  const t = blogDictionary[locale as keyof typeof blogDictionary] || blogDictionary.en;
   
-  // State for search query
-  const [searchQuery, setSearchQuery] = useState('');
-  
-  // State for active category
-  const [activeCategory, setActiveCategory] = useState('all');
-  
-  // Filter posts by category and search query
-  const filteredPosts = blogPosts.filter(post => {
-    const matchesCategory = activeCategory === 'all' || post.category === activeCategory;
-    const matchesSearch = post.title[locale as keyof typeof post.title]
-      ?.toLowerCase()
-      .includes(searchQuery.toLowerCase()) ||
-      post.excerpt[locale as keyof typeof post.excerpt]
-        ?.toLowerCase()
-        .includes(searchQuery.toLowerCase());
-    
-    return matchesCategory && matchesSearch;
-  });
-  
-  // Get featured article
-  const featuredArticle = blogPosts.find(post => post.featured);
+  // Since we can't use useState in a server component, we'll just show all posts
+  const displayedPosts = blogPosts;
+  const selectedCategory = 'all';
   
   return (
-    <main className="min-h-screen bg-neutral-50 pt-24 pb-16">
-      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Page Header */}
-        <div className="text-center mb-12">
-          <h1 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">{dictionary.title}</h1>
-          <p className="text-lg text-gray-600 max-w-3xl mx-auto">{dictionary.subtitle}</p>
+    <main className="min-h-screen bg-neutral pb-16">
+      <Header locale={locale} dictionary={dict} />
+      
+      {/* Hero Section */}
+      <section className="py-20 px-4 bg-gradient-to-r from-primary to-primary-dark text-white">
+        <div className="container mx-auto max-w-6xl">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{t.title}</h1>
+          <p className="text-xl max-w-3xl">{t.subtitle}</p>
         </div>
-        
-        {/* Featured Article */}
-        {featuredArticle && (
-          <div className="mb-16">
-            <h2 className="text-2xl font-bold text-gray-800 mb-6">{dictionary.featured}</h2>
-            <div className="bg-white rounded-xl shadow-sm overflow-hidden">
-              <div className="grid grid-cols-1 md:grid-cols-2">
-                <div className="relative h-64 md:h-auto md:aspect-auto">
-                  <Image
-                    src={featuredArticle.image}
-                    alt={featuredArticle.title[locale as keyof typeof featuredArticle.title] || ''}
-                    fill
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, 50vw"
-                  />
-                </div>
-                <div className="p-6 md:p-8 flex flex-col">
-                  <div className="mb-2">
-                    <span className="text-xs font-medium px-2 py-1 bg-primary/10 text-primary rounded">
-                      {(categories.find(cat => cat.id === featuredArticle.category)?.name as any)?.[locale] || featuredArticle.category}
-                    </span>
-                  </div>
-                  <h3 className="text-xl md:text-2xl font-bold text-gray-800 mb-3">
-                    {featuredArticle.title[locale as keyof typeof featuredArticle.title]}
-                  </h3>
-                  <p className="text-gray-600 mb-6">
-                    {featuredArticle.excerpt[locale as keyof typeof featuredArticle.excerpt]}
-                  </p>
-                  <div className="flex items-center mb-6 mt-auto">
-                    <div className="relative h-10 w-10 rounded-full overflow-hidden mr-3">
-                      <Image
-                        src={featuredArticle.author.avatar}
-                        alt={featuredArticle.author.name}
+      </section>
+      
+      {/* Blog Content Section */}
+      <section className="py-12 px-4">
+        <div className="container mx-auto max-w-6xl">
+          <div className="flex flex-col lg:flex-row gap-8">
+            {/* Main Content */}
+            <div className="w-full lg:w-2/3">
+              {/* Featured Article */}
+              {featuredPost && (
+                <div className="mb-12">
+                  <h2 className="text-2xl font-bold mb-6">{t.featured}</h2>
+                  <div className="bg-white rounded-lg shadow-md overflow-hidden">
+                    <div className="relative h-80 w-full">
+                      <Image 
+                        src={featuredPost.image || '/images/blog/placeholder.jpg'} 
+                        alt={featuredPost.title[locale as keyof typeof featuredPost.title] || ''} 
                         fill
-                        className="object-cover"
+                        style={{objectFit: "cover"}}
                       />
                     </div>
-                    <div>
-                      <p className="text-sm font-medium text-gray-800">
-                        {dictionary.by} {featuredArticle.author.name}
-                      </p>
-                      <div className="text-xs text-gray-500 flex items-center">
-                        <CalendarIcon className="h-3 w-3 mr-1" />
-                        <span>{formatDate(featuredArticle.date, locale)}</span>
+                    <div className="p-6">
+                      <div className="flex items-center text-gray-500 text-sm mb-3">
+                        <CalendarIcon className="h-4 w-4 mr-1" />
+                        <span>{formatDate(featuredPost.date, locale)}</span>
                         <span className="mx-2">•</span>
-                        <span>{featuredArticle.readTime} {dictionary.minutes}</span>
+                        <ClockIcon className="h-4 w-4 mr-1" />
+                        <span>{featuredPost.readTime} {t.minutes}</span>
                       </div>
+                      <h3 className="text-2xl font-bold mb-3">
+                        {featuredPost.title[locale as keyof typeof featuredPost.title] || featuredPost.title.en}
+                      </h3>
+                      <p className="text-gray-600 mb-4">
+                        {featuredPost.excerpt[locale as keyof typeof featuredPost.excerpt] || featuredPost.excerpt.en}
+                      </p>
+                      <Link href={`/${locale}/blog/${featuredPost.id}`} className="inline-flex items-center text-primary font-medium">
+                        {t.readMore} <ArrowRightIcon className="h-4 w-4 ml-1" />
+                      </Link>
                     </div>
                   </div>
-                  <Link
-                    href={`/${locale}/blog/${featuredArticle.id}`}
-                    className="inline-flex items-center text-primary hover:text-primary-dark font-medium transition-colors"
-                  >
-                    {dictionary.viewArticle}
-                    <ArrowRightIcon className="h-4 w-4 ml-1" />
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-        
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          {/* Main Content */}
-          <div className="lg:col-span-2">
-            {/* Search Bar */}
-            <div className="mb-8">
-              <div className="relative">
-                <input
-                  type="text"
-                  placeholder={dictionary.search}
-                  className="w-full px-4 py-3 pl-10 pr-16 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-                <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
-                </div>
-                <button className="absolute inset-y-0 right-0 pr-3 flex items-center text-primary font-medium">
-                  {dictionary.searchButton}
-                </button>
-              </div>
-            </div>
-            
-            {/* Recent Articles Section */}
-            <div className="mb-8">
-              <h2 className="text-2xl font-bold text-gray-800 mb-6">{dictionary.recent}</h2>
-              
-              {filteredPosts.length > 0 ? (
-                <div className="space-y-8">
-                  {filteredPosts.map((post) => (
-                    <article key={post.id} className="bg-white rounded-xl shadow-sm overflow-hidden">
-                      <div className="md:flex">
-                        <div className="relative md:w-1/3 h-48 md:h-auto">
-                          <Image
-                            src={post.image}
-                            alt={post.title[locale as keyof typeof post.title] || ''}
-                            fill
-                            className="object-cover"
-                            sizes="(max-width: 768px) 100vw, 33vw"
-                          />
-                        </div>
-                        <div className="p-6 md:w-2/3">
-                          <div className="mb-2">
-                            <span className="text-xs font-medium px-2 py-1 bg-gray-100 text-gray-800 rounded">
-                              {(categories.find(cat => cat.id === post.category)?.name as any)?.[locale] || post.category}
-                            </span>
-                          </div>
-                          <h3 className="text-xl font-bold text-gray-800 mb-2">
-                            {post.title[locale as keyof typeof post.title]}
-                          </h3>
-                          <p className="text-gray-600 mb-4">
-                            {post.excerpt[locale as keyof typeof post.excerpt]}
-                          </p>
-                          <div className="flex justify-between items-end">
-                            <div className="flex items-center">
-                              <div className="relative h-8 w-8 rounded-full overflow-hidden mr-2">
-                                <Image
-                                  src={post.author.avatar}
-                                  alt={post.author.name}
-                                  fill
-                                  className="object-cover"
-                                />
-                              </div>
-                              <div>
-                                <p className="text-sm font-medium text-gray-800">{post.author.name}</p>
-                                <div className="text-xs text-gray-500">
-                                  {formatDate(post.date, locale)} • {post.readTime} {dictionary.minutes}
-                                </div>
-                              </div>
-                            </div>
-                            <Link
-                              href={`/${locale}/blog/${post.id}`}
-                              className="text-primary hover:text-primary-dark text-sm font-medium"
-                            >
-                              {dictionary.readMore}
-                            </Link>
-                          </div>
-                        </div>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              ) : (
-                <div className="text-center py-12 bg-white rounded-xl shadow-sm">
-                  <p className="text-gray-500">No articles found matching your criteria.</p>
                 </div>
               )}
-            </div>
-          </div>
-          
-          {/* Sidebar */}
-          <div className="space-y-8">
-            {/* Categories */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">{dictionary.categories}</h3>
-              <ul className="space-y-2">
-                {categories.map((category) => (
-                  <li key={category.id}>
-                    <button
-                      className={`flex items-center justify-between w-full py-2 px-3 rounded-lg transition-colors ${
-                        activeCategory === category.id
-                          ? 'bg-primary/10 text-primary font-medium'
-                          : 'text-gray-700 hover:bg-gray-50'
-                      }`}
-                      onClick={() => setActiveCategory(category.id)}
-                    >
-                      <span>{category.name[locale as keyof typeof category.name]}</span>
-                      <span className="text-xs font-medium bg-gray-100 text-gray-800 rounded-full px-2 py-0.5">
-                        {category.count}
-                      </span>
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            
-            {/* Popular Tags */}
-            <div className="bg-white rounded-xl shadow-sm p-6">
-              <h3 className="text-lg font-bold text-gray-800 mb-4">{dictionary.popularTags}</h3>
-              <div className="flex flex-wrap gap-2">
-                {popularTags.map((tag) => (
-                  <button
-                    key={tag.id}
-                    className="text-sm px-3 py-1 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-full transition-colors"
-                  >
-                    {tag.name[locale as keyof typeof tag.name]}
-                  </button>
-                ))}
+              
+              {/* All Posts */}
+              <div>
+                <h2 className="text-2xl font-bold mb-6">{t.recent}</h2>
+                <div className="grid gap-8 md:grid-cols-2">
+                  {displayedPosts.filter(post => post.id !== featuredPost?.id).map(post => (
+                    <div key={post.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+                      <div className="relative h-48 w-full">
+                        <Image 
+                          src={post.image || '/images/blog/placeholder.jpg'} 
+                          alt={post.title[locale as keyof typeof post.title] || ''} 
+                          fill
+                          style={{objectFit: "cover"}}
+                        />
+                      </div>
+                      <div className="p-6">
+                        <div className="flex items-center text-gray-500 text-sm mb-3">
+                          <CalendarIcon className="h-4 w-4 mr-1" />
+                          <span>{formatDate(post.date, locale)}</span>
+                          <span className="mx-2">•</span>
+                          <ClockIcon className="h-4 w-4 mr-1" />
+                          <span>{post.readTime} {t.minutes}</span>
+                        </div>
+                        <h3 className="text-xl font-bold mb-3">
+                          {post.title[locale as keyof typeof post.title] || post.title.en}
+                        </h3>
+                        <p className="text-gray-600 mb-4 line-clamp-2">
+                          {post.excerpt[locale as keyof typeof post.excerpt] || post.excerpt.en}
+                        </p>
+                        <Link href={`/${locale}/blog/${post.id}`} className="inline-flex items-center text-primary font-medium">
+                          {t.readMore} <ArrowRightIcon className="h-4 w-4 ml-1" />
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
               </div>
             </div>
             
-            {/* Newsletter Subscription */}
-            <div className="bg-primary rounded-xl shadow-sm p-6 text-white">
-              <h3 className="text-lg font-bold mb-2">{dictionary.subscribe}</h3>
-              <p className="text-sm opacity-90 mb-4">{dictionary.subscribeDescription}</p>
-              <div className="space-y-2">
-                <input
-                  type="email"
-                  placeholder={dictionary.emailPlaceholder}
-                  className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg placeholder-white/60 text-white focus:outline-none focus:ring-2 focus:ring-white"
-                />
-                <button className="w-full py-2 px-4 bg-white text-primary font-medium rounded-lg hover:bg-white/90 transition-colors">
-                  {dictionary.subscribeButton}
+            {/* Sidebar */}
+            <div className="w-full lg:w-1/3">
+              {/* Categories */}
+              <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 className="text-xl font-bold mb-4">{t.categories}</h3>
+                <ul className="space-y-2">
+                  {categories.map(category => (
+                    <li key={category.id}>
+                      <div className={`flex items-center justify-between p-2 rounded-md ${selectedCategory === category.id ? 'bg-primary-light text-primary' : 'hover:bg-gray-100'}`}>
+                        <span>{category.name[locale as keyof typeof category.name] || category.name.en}</span>
+                        <span className="bg-gray-200 text-gray-800 px-2 py-1 rounded-full text-xs">
+                          {category.count}
+                        </span>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              {/* Popular Tags */}
+              <div className="bg-white rounded-lg shadow-md p-6 mb-8">
+                <h3 className="text-xl font-bold mb-4">{t.popularTags}</h3>
+                <div className="flex flex-wrap gap-2">
+                  {popularTags.map(tag => (
+                    <span key={tag.id} className="bg-gray-100 hover:bg-gray-200 px-3 py-1 rounded-full text-sm">
+                      {tag.name[locale as keyof typeof tag.name] || tag.name.en}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              
+              {/* Newsletter Subscription */}
+              <div className="bg-primary text-white rounded-lg shadow-md p-6">
+                <h3 className="text-xl font-bold mb-3">{t.subscribe}</h3>
+                <p className="mb-4">{t.subscribeDescription}</p>
+                <div className="mb-3">
+                  <input 
+                    type="email" 
+                    placeholder={t.emailPlaceholder}
+                    className="w-full p-3 rounded-md text-gray-800"
+                  />
+                </div>
+                <button className="w-full bg-accent hover:bg-accent-dark text-white font-medium py-3 px-4 rounded-md transition-colors">
+                  {t.subscribeButton}
                 </button>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </section>
+      
+      <Footer locale={locale} dictionary={dict} />
     </main>
   );
 } 
